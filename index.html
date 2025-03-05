@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live GPS Tracking</title>
+</head>
+<body>
+    <h2>Lokasi HP Anda:</h2>
+    <p>Latitude: <span id="lat">-</span></p>
+    <p>Longitude: <span id="lon">-</span></p>
+    <p>Akurasi: <span id="accuracy">-</span> meter</p>
+    <p>Kecepatan: <span id="speed">-</span> m/s</p>
+
+    <script>
+        function updateLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(position => {
+                    document.getElementById("lat").textContent = position.coords.latitude;
+                    document.getElementById("lon").textContent = position.coords.longitude;
+                    document.getElementById("accuracy").textContent = position.coords.accuracy;
+                    document.getElementById("speed").textContent = position.coords.speed || 0;
+                }, error => {
+                    console.error("Gagal mendapatkan lokasi:", error.message);
+                }, { enableHighAccuracy: true });
+            } else {
+                alert("Geolocation tidak didukung di perangkat ini.");
+            }
+        }
+
+        updateLocation();
+    </script>
+</body>
+</html>
