@@ -4,31 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live GPS Tracking</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #map { height: 500px; width: 100%; margin-top: 10px; }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
-    <h2>Lokasi HP Anda:</h2>
+    <h2>Live Tracking dengan OpenStreetMap</h2>
     <p>Latitude: <span id="lat">-</span></p>
     <p>Longitude: <span id="lon">-</span></p>
-    <p>Akurasi: <span id="accuracy">-</span> meter</p>
-    <p>Kecepatan: <span id="speed">-</span> m/s</p>
+    <div id="map"></div>
 
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        function updateLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.watchPosition(position => {
-                    document.getElementById("lat").textContent = position.coords.latitude;
-                    document.getElementById("lon").textContent = position.coords.longitude;
-                    document.getElementById("accuracy").textContent = position.coords.accuracy;
-                    document.getElementById("speed").textContent = position.coords.speed || 0;
-                }, error => {
-                    console.error("Gagal mendapatkan lokasi:", error.message);
-                }, { enableHighAccuracy: true });
-            } else {
-                alert("Geolocation tidak didukung di perangkat ini.");
+        let map = L.map('map').setView([0, 0], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        
+        let marker = L.marker([0, 0]).addTo(map);
+
+        function getLocationFromURL() {
+            let params = new URLSearchParams(window.location.search);
+            let lat = params.get("lat");
+            let lon = params.get("lon");
+
+            if (lat && lon) {
+                document.getElementById("lat").textContent = lat;
+                document.getElementById("lon").textContent = lon;
+                marker.setLatLng([lat, lon]);
+                map.setView([lat, lon], 15);
             }
         }
 
-        updateLocation();
+        getLocationFromURL();
     </script>
 </body>
 </html>
